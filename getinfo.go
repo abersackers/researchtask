@@ -5,10 +5,12 @@ import (
 	"bufio"
 	"encoding/csv"
 	"github.com/google/uuid"
+	"io/ioutil"
 	"log"
 	"net/http"
 	"os"
 	"strconv"
+	"strings"
 	"time"
 )
 
@@ -51,6 +53,8 @@ func csvCreate(websites []string) {
 	writer := csv.NewWriter(file)
 	defer writer.Flush()
 
+	writer.Write([]string{"Request ID", "URL Queried", "Query Reponse Status", "Start Time", "End Time", "Response Size"})
+
 	for i := 0; i < len(websites); i++ {
 		requestID, urlQueried, respStatus, startTime, endTime, respSize := httpData(websites[i])
 		data := []string{requestID.String(), urlQueried, respStatus, strconv.Itoa(int(startTime)), strconv.Itoa(int(endTime)), strconv.Itoa(int(respSize))}
@@ -64,7 +68,7 @@ func csvCreate(websites []string) {
 //timing out on largeLinks.txt, current iteration is on github
 //seems to be a timeout issue which will require further investigation, however
 //since it works well on smallLinks.txt will come back later
-func httpData(website string) (uuid.UUID, string, string, int64, int64, int64) {
+func httpData(website string) (uuid.UUID, string, string, int64, int64, float64) {
 
 	requestID := uuid.New() //randomly generate locally since it does not need to be sent in network request
 	urlQueried := website   //storing to preserve order (can be deleted)
@@ -74,17 +78,33 @@ func httpData(website string) (uuid.UUID, string, string, int64, int64, int64) {
 
 	resp, err := http.Get(website)
 	if err != nil {
-		panic(err)
+		if strings.HasPrefix(website, "https://") && !(strings.HasPrefix(website, "https://www.")) {
+			return httpData("https://www." + website[8:len(website)])
+		} else if strings.HasPrefix(website, "https://www.") {
+			return httpData("http://" + website[12:len(website)])
+		} else if strings.HasPrefix(website, "http://") && !strings.HasPrefix(website, "http://www.") {
+			return httpData("http://www." + website[7:len(website)])
+		} else if strings.HasPrefix(website, "http://www.") {
+			return httpData("www." + website[11:len(website)])
+		} else if strings.HasPrefix(website, "www.") {
+			return httpData(website[4:len(website)])
+		}
+		return requestID, urlQueried, "false", startTime, time.Now().UnixNano(), -1
 	}
 	defer resp.Body.Close()
 
 	endTime := time.Now().UnixNano()
 
 	//calculate response statistics
+	//fmt.Println(resp.Status)
 	respStatus := resp.Status
-	respSize := resp.ContentLength //returns -1 a lot so have to check up (might be due to type of int64)
+	body, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		panic(err)
+	}
+	respSize := len(body) //interpreted as number of bytes from io
 
 	//return all values in order that they were asked
-	return requestID, urlQueried, respStatus, startTime, endTime, respSize
+	return requestID, urlQueried, respStatus, startTime, endTime, float64(respSize)
 
 }
