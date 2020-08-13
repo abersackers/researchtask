@@ -86,7 +86,7 @@ func csvCreate(websites []string) {
 }
 
 //analysis code of each website
-//goal: figure out why parallelism isn't working on largeLinks
+//parallelism started working with better wifi connection
 func httpData(website string) (uuid.UUID, string, string, int64, int64, float64) {
 
 	requestID := uuid.New() //randomly generate locally since it does not need to be sent in network request

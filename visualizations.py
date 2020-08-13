@@ -5,6 +5,8 @@
 
 import pandas as pd
 import numpy as np
+import matplotlib.pyplot as plt
+
 
 
 # takes in a pandas dataframe with the assumption that the 5th indexed
@@ -36,10 +38,18 @@ def print_percentiles(sorted):
         print(str(i) + "th percentile is: " + str(np.percentile(sorted, i)))
 
 
+def line_plot(start_times, total_times):
+    plt.style.use('seaborn-whitegrid')
+    plt.plot(start_times, total_times)
+    plt.savefig('start_v_total.png')
+
+
 # read the csv output of getinfo.go
 data = pd.read_csv("requestData.csv")
 
 # calculate & print percentile data for difference in time
-agg_data = pd.array(data['End Time'] - data['Start Time']).to_numpy()
-sorted, cdf = cdf(agg_data)
+start_times = pd.array(data['Start Time']).to_numpy()
+total_times = pd.array(data['End Time'] - data['Start Time']).to_numpy()
+sorted, cdf = cdf(total_times)
 print_percentiles(sorted)
+line_plot(start_times, total_times)
