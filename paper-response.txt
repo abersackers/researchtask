@@ -1,0 +1,16 @@
+1. Research Question:
+    - How well do parental control apps protect sensitive data and comply with the regulations placed on them?
+
+2. Researchers Focus:
+    - The researchers focused on how different parental control apps gain access to, use, and distribute child information. Then they check how transparent these companies are with how the data is being used and how it falls under the regulations placed upon them by different governing boards. This is done through a static analysis, which permissions are requested/granted and what 3rd party libraries gain access to the data, a dynamic analysis, how much data is actually proliferated and to whom, and a privacy policy analysis, what extent do developers respect enforced regulations about transparency.
+
+3. Results:
+    - Static Analysis: Monitoring apps tend to require more permissions, which tend to be more dangerous, in comparison to restriction apps. Parental control apps tend to request more permissions (and more dangerous permissions) than the average top 150 app on the Google Play Store. However in extreme cases on both ends, there are apps that request 91 permissions (16 dangerous) and other apps that request 0 dangerous permissions. Since third party libraries invoke some of the dangerous permission calls, third part companies may be collecting and processing data beyond the scope of the app and promise from the developer. None of this directly implies the proliferation of data
+    - Dynamic Analysis: Despite a lot of apps collecting sensitive data, very few were actually were actually disseminating data like location. However, despite regulations 67% of apps were disseminating some personal data without explicit or verifiable consent.
+    - Privacy Policy Analysis: Not every app had a published privacy policy. For those that do, they do report that a minor's data is being collected, but only close to half inform users how the data is being processed.
+
+4. Interesting Things:
+    - I found the order of how the data presented to be very interesting. By starting with static analysis the reader is genuinely scared of how much data is being collected, while the dynamic analysis somewhat cools the brake on the risk of everything. I was also shocked to see that not every company had a published privacy policy.
+
+5. Things I Would Like to See:
+    - I find it interesting that this study actually did not mention anything about the price of the apps. Something I would like to see the results of are how does the price/subscription model of the app effect the privacy and integrity of the data collected. I would include at least a couple graphics to account for this variable if I were to do this study.
