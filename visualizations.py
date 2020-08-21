@@ -38,7 +38,11 @@ def print_percentiles(sorted):
         print(str(i) + "th percentile is: " + str(np.percentile(sorted, i)))
 
 
-def line_plot(start_times, total_times):
+def line_plot(df):
+    df = df.sort_values(by = 'Start Time', ascending=True)
+    start_times = df['Start Time'] - min(df['Start Time'])
+    total_times = df['End Time'] - df['Start Time']
+    total_times = total_times - min(total_times)
     plt.style.use('seaborn-whitegrid')
     plt.plot(start_times, total_times)
     plt.savefig('start_v_total.png')
@@ -48,8 +52,8 @@ def line_plot(start_times, total_times):
 data = pd.read_csv("requestData.csv")
 
 # calculate & print percentile data for difference in time
-start_times = pd.array(data['Start Time']).to_numpy()
 total_times = pd.array(data['End Time'] - data['Start Time']).to_numpy()
 sorted, cdf = cdf(total_times)
 print_percentiles(sorted)
-line_plot(start_times, total_times)
+# plot start times vs total times
+line_plot(data)
